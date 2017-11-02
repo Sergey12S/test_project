@@ -15,7 +15,25 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth.views import login
+from django.contrib.auth.decorators import user_passes_test
+from test_app.views import Index, UsersList, SignUp, UserDetail, UserDelete
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^$|index/$', Index.as_view()),
+    url(r'^users_list/$', user_passes_test(lambda u: u.is_superuser)(UsersList.as_view())),
+    url(r'^user_detail/(?P<pk>\d+)/$', user_passes_test(lambda u: u.is_superuser)(UserDetail.as_view()), name='user_detail'),
+    url(r'^user_detail/(?P<pk>\d+)/delete/$', user_passes_test(lambda u: u.is_superuser)(UserDelete.as_view()), name='user_delete'),
+    url(r'^sign_in/$', login, {'template_name': 'sign_in.html'}),
+    url(r'^sign_up/$', SignUp.as_view()),
 ]
+
+
+if settings.DEBUG:
+    # static files (images, css, javascript, etc.)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

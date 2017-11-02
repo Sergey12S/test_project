@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User delete</title>
+</head>
+<body>
+
+    <h3>Are you sure you want to delete?</h3>
+        <p style="text-decoration: underline;">
+            {{object.username}}
+        </p>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_table }}
+            <button type="submit">Yes</button>&nbsp;
+            <a href="/users_list/">No</a>
+        </form><br/>
+
+</body>
+</html>

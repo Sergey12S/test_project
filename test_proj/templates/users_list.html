@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users list</title>
+</head>
+<body>
+
+    <a href="/sign_up/" style="font-size: 20px;">Create user</a>
+
+    <h2>Users list:</h2>
+
+        <form action="">
+            <input type="text" name="search" id="id_search" placeholder="Search first_name" />&nbsp;
+            <input type="text" name="search2" id="id_search2" placeholder="Search last_name" />
+            <select name="sort_field" id="id_sort_field">
+                <option value="username">username</option>
+                <option value="first_name">first_name</option>
+                <option value="last_name">last_name</option>
+                <option value="birth_date">birth_date</option>
+            </select>
+            <button type="submit">Search</button>
+        </form><br/>
+
+    {% for user in object_list %}
+        {% if not user.is_superuser %}
+            <span style="color: red;">username: {{ user.username }}</span>&nbsp;&nbsp;&nbsp;
+            <span style="color: blue;">first_name: {{ user.first_name }}</span>&nbsp;&nbsp;&nbsp;
+            <span style="color: green;">last_name: {{ user.last_name }}</span>&nbsp;&nbsp;&nbsp;
+            <span style="color: brown;">birth_date: {{ user.birth_date }}</span>&nbsp;&nbsp;&nbsp;
+            <a href="{% url 'user_detail' pk=user.id %}">Detail</a>&nbsp;&nbsp;&nbsp;
+            <a href="{% url 'user_delete' pk=user.id %}">Delete</a><br/><br/>
+        {% endif %}
+    {% endfor %}
+
+</body>
+</html>
