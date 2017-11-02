@@ -1,7 +1,9 @@
+import xlwt
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, TemplateView
 from test_app.models import User
 from .forms import SignUpForm, UserListForm
 from datetime import date
+from django.http import HttpResponse
 
 
 class Index(TemplateView):
@@ -63,3 +65,36 @@ class UserDelete(DeleteView):
     model = User
     template_name = "user_delete.html"
     success_url = '/users_list/'
+
+
+def export_users_xls(request):
+    """Export to xls"""
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="users.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Users')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['username', 'first_name', 'last_name', 'birth_date', ]
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+    font_style.num_format_str = 'D-MMM-YY'
+
+    rows = User.objects.filter(is_superuser=False).values_list('username', 'first_name', 'last_name', 'birth_date')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+    return response
