@@ -128,7 +128,7 @@ class ImageLike(VotingList):
             own = False
             if all_likes.filter(author=request.user).exists():  # Ищет пользователя в авторах лайков к этому вопросу
                 own = True
-            if self.like.is_valid() and not own:  # Если пользователь еще не ставил лайк
+            if self.like.is_valid() and not own and user_image.rating < 10:  # Если пользователь еще не ставил лайк
                 q_like = self.like.save(commit=False)
                 q_like.author = request.user
                 q_like.image = user_image

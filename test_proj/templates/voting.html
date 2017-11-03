@@ -11,7 +11,7 @@
                 <span>{{ user.username }}</span><br/>
                 <img src="/media/{{ user.avatar }}" width="100px" height="100px"><br/>
                 rating: {{ user.rating }}<br/>
-                {% if request.user.is_authenticated %}
+                {% if request.user.is_authenticated and user.rating < 10 %}
                     <form action="{% url 'image_like' pk=user.id %}" method="post" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit">+1</button>
