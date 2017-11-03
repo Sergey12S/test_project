@@ -4,6 +4,8 @@ from test_app.models import User
 from .forms import SignUpForm, UserListForm
 from datetime import date
 from django.http import HttpResponse
+from rest_framework import viewsets
+from .serializers import UserSerializer
 
 
 class Index(TemplateView):
@@ -98,3 +100,11 @@ def export_users_xls(request):
 
     wb.save(response)
     return response
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.filter(is_superuser=False).order_by('-date_joined')
+    serializer_class = UserSerializer
