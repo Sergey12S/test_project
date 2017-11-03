@@ -1,5 +1,5 @@
 from django import forms
-from test_app.models import User
+from test_app.models import User, Like
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -18,3 +18,10 @@ class UserListForm(forms.Form):
     sort_field = forms.ChoiceField(choices=(('username', 'username'), ('first_name', 'first_name'),
                                             ('last_name', 'last_name'), ('birth_date', 'birth_date')),
                                    required=False)
+
+
+class LikeForm(forms.ModelForm):
+    """Like"""
+    class Meta:
+        model = Like
+        fields = ('title',)

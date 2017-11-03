@@ -1,11 +1,13 @@
 import xlwt
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, TemplateView
-from test_app.models import User
-from .forms import SignUpForm, UserListForm
+from test_app.models import User, Like
+from .forms import SignUpForm, UserListForm, LikeForm
 from datetime import date
 from django.http import HttpResponse
 from rest_framework import viewsets
 from .serializers import UserSerializer
+from django.db.models import F
+from django.shortcuts import redirect
 
 
 class Index(TemplateView):
@@ -44,7 +46,7 @@ class SignUp(CreateView):
     model = User
     template_name = "sign_up.html"
     form_class = SignUpForm
-    success_url = "/users_list/"
+    success_url = "/index/"
 
 
 class UserDetail(DetailView):
@@ -108,3 +110,35 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.filter(is_superuser=False).order_by('-date_joined')
     serializer_class = UserSerializer
+
+
+class VotingList(ListView):
+    """Voting list page"""
+    template_name = "voting.html"
+    model = User
+
+
+class ImageLike(VotingList):
+    """Like"""
+    def dispatch(self, request, *args, **kwargs):
+        user_image = User.objects.get(pk=self.kwargs['pk'])
+        self.like = LikeForm(request.POST)
+        try:
+            all_likes = Like.objects.filter(image=user_image)  # Выборка всех лайков к этому вопросу
+            own = False
+            if all_likes.filter(author=request.user).exists():  # Ищет пользователя в авторах лайков к этому вопросу
+                own = True
+            if self.like.is_valid() and not own:  # Если пользователь еще не ставил лайк
+                q_like = self.like.save(commit=False)
+                q_like.author = request.user
+                q_like.image = user_image
+                q_like.save()
+                user_image.rating = F('rating') + 1
+                user_image.save()
+                user_image.likes.add(q_like)
+                return redirect('voting')
+            elif self.like.is_valid() and own:  # Если пользователь уже ставил лайк
+                return redirect('voting')
+        except:
+            return redirect('voting')
+        return super(VotingList, self).dispatch(request, *args, **kwargs)

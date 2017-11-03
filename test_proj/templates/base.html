@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+
+    <header style="height: 20px;">
+
+            {% if not user.is_authenticated %}
+                Input to continue.&nbsp;&nbsp; login:admin&nbsp;&nbsp; password:password123&nbsp;&nbsp;
+                <a href="/sign_in/">Sign in</a> or <a href="/sign_up/">Sign up</a>
+            {% else %}
+                <form action="/logout/" method="post">
+                     {% csrf_token %}
+                     {{ request.user }}
+                     <button type="submit">logout</button>
+                </form>
+            {% endif %}
+
+    </header><hr/>
+
+    {% block content %}{% endblock %}
+
+</body>
+</html>

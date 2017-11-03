@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User delete</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}User delete{% endblock %}
+
+{% block content %}
 
     <h3>Are you sure you want to delete?</h3>
         <p style="text-decoration: underline;">
@@ -17,5 +14,4 @@
             <a href="/users_list/">No</a>
         </form><br/>
 
-</body>
-</html>
+{% endblock %}

@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Users list</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}User list{% endblock %}
 
-    <a href="/sign_up/" style="font-size: 20px;">Create user</a><br/>
+{% block content %}
+
+    <a href="/index/">back to main page</a><br/>
     <a href="{% url 'export_users_xls' %}" style="font-size: 20px;">Export all users to xls</a><br/>
 
     <h2>Users list:</h2>
@@ -34,5 +31,4 @@
         {% endif %}
     {% endfor %}
 
-</body>
-</html>
+{% endblock %}

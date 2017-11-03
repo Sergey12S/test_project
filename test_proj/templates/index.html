@@ -1,21 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Index</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Index{% endblock %}
 
-    {% if not user.is_authenticated %}
-        <p>Input to continue.</p>
-        <p>login: admin</p>
-        <p>password: password123</p>
-        <a href="/sign_in/">Sign in</a>
+{% block content %}
+
+    {% if user.is_superuser %}
+        <a href="/users_list/">Users list</a><br/><br/>
     {% endif %}
 
-    {% if user.is_authenticated %}
-        <a href="/users_list/">Users list</a>
-    {% endif %}
+    <a href="/voting/">Go for voting</a><br/><br/>
+    <a href="/users/">API</a>
 
-</body>
-</html>
+{% endblock %}

@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User detail</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}User detail{% endblock %}
+
+{% block content %}
+
 
     <a href="/users_list/">back to list</a><br/><br/>
 
@@ -13,7 +11,7 @@
     last_name: {{ object.last_name }}<br/><br/>
     birth_date: {{ object.birth_date }}<br/><br/>
     age: {{ age }}<br/><br/>
-    avatar: <img src="/media/{{ object.avatar }}" width="100px" height="100px">
+    avatar: <img src="/media/{{ object.avatar }}" width="100px" height="100px"><br/><br/>
+    rating: {{ object.rating }}
 
-</body>
-</html>
+{% endblock %}
