@@ -1,34 +1,39 @@
 {% extends 'base.html' %}
-{% block title %}User list{% endblock %}
+{% block title %}Users list{% endblock %}
+
+{% block caption %}Users list:{% endblock %}
 
 {% block content %}
 
-    <a href="/index/">back to main page</a><br/>
-    <a href="{% url 'export_users_xls' %}" style="font-size: 20px;">Export all users to xls</a><br/>
+    <form action="" class="form-inline my-2 my-lg-0">
+        <input type="text" name="search" id="id_search" class="form-control mr-sm-2" placeholder="Search first_name" />&nbsp;
+        <input type="text" name="search2" id="id_search2" class="form-control mr-sm-2" placeholder="Search last_name" />
+        <select name="sort_field" id="id_sort_field" class="custom-select">
+            <option value="username">username</option>
+            <option value="first_name">first_name</option>
+            <option value="last_name">last_name</option>
+            <option value="birth_date">birth_date</option>
+        </select>&nbsp;&nbsp;
+        <button type="submit" class="btn btn-outline-primary">Search</button>
+    </form><br/>
 
-    <h2>Users list:</h2>
-
-        <form action="">
-            <input type="text" name="search" id="id_search" placeholder="Search first_name" />&nbsp;
-            <input type="text" name="search2" id="id_search2" placeholder="Search last_name" />
-            <select name="sort_field" id="id_sort_field">
-                <option value="username">username</option>
-                <option value="first_name">first_name</option>
-                <option value="last_name">last_name</option>
-                <option value="birth_date">birth_date</option>
-            </select>
-            <button type="submit">Search</button>
-        </form><br/>
-
+    <div class="col-sm-8">
     {% for user in object_list %}
-        {% if not user.is_superuser %}
-            <span style="color: red;">username: {{ user.username }}</span>&nbsp;&nbsp;&nbsp;
-            <span style="color: blue;">first_name: {{ user.first_name }}</span>&nbsp;&nbsp;&nbsp;
-            <span style="color: green;">last_name: {{ user.last_name }}</span>&nbsp;&nbsp;&nbsp;
-            <span style="color: brown;">birth_date: {{ user.birth_date }}</span>&nbsp;&nbsp;&nbsp;
-            <a href="{% url 'user_detail' pk=user.id %}">Detail</a>&nbsp;&nbsp;&nbsp;
-            <a href="{% url 'user_delete' pk=user.id %}">Delete</a><br/><br/>
-        {% endif %}
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title" style="margin-top: -16px;">username: {{ user.username }}</h4>
+            <span class="card-text">first_name: {{ user.first_name }}</span>&nbsp;&nbsp;&nbsp;
+            <span class="card-text">last_name: {{ user.last_name }}</span>&nbsp;&nbsp;&nbsp;
+            <span class="card-text">birth_date: {{ user.birth_date }}</span>
+            <a href="{% url 'user_detail' pk=user.id %}" class="btn btn-primary" style="float:right;margin-bottom:-20px;">Detail</a>
+            <a href="{% url 'user_delete' pk=user.id %}" class="btn btn-danger" style="float:right;margin-bottom:-20px;">Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
     {% endfor %}
+    </div>
 
 {% endblock %}

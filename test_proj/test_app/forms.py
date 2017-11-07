@@ -1,14 +1,12 @@
 from django import forms
-from test_app.models import User, Like
-from django.contrib.auth.forms import UserCreationForm
+from test_app.models import User
 
 
-class SignUpForm(UserCreationForm):
+class SignUpForm(forms.ModelForm):
     """Sign up"""
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'password1', 'password2',
-                  'birth_date', 'avatar')
+        fields = ('username', 'first_name', 'last_name', 'birth_date', 'avatar')
 
 
 class UserListForm(forms.Form):
@@ -19,9 +17,3 @@ class UserListForm(forms.Form):
                                             ('last_name', 'last_name'), ('birth_date', 'birth_date')),
                                    required=False)
 
-
-class LikeForm(forms.ModelForm):
-    """Like"""
-    class Meta:
-        model = Like
-        fields = ('title',)

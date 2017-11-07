@@ -1,18 +1,22 @@
 import xlwt
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, TemplateView
-from test_app.models import User, Like
-from .forms import SignUpForm, UserListForm, LikeForm
+from django.views.generic import ListView, DetailView, DeleteView, View, CreateView
+from test_app.models import User
+from .forms import UserListForm, SignUpForm
 from datetime import date
 from django.http import HttpResponse
 from rest_framework import viewsets
 from .serializers import UserSerializer
 from django.db.models import F
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
+from django.db import transaction
 
 
-class Index(TemplateView):
-    """Index page"""
-    template_name = "index.html"
+class SignUp(CreateView):
+    """Sign up page"""
+    model = User
+    template_name = "sign_up.html"
+    form_class = SignUpForm
+    success_url = "/users_list/"
 
 
 class UsersList(ListView):
@@ -39,14 +43,6 @@ class UsersList(ListView):
         context = super(UsersList, self).get_context_data(**kwargs)
         context['form'] = self.form
         return context
-
-
-class SignUp(CreateView):
-    """Sign up page"""
-    model = User
-    template_name = "sign_up.html"
-    form_class = SignUpForm
-    success_url = "/index/"
 
 
 class UserDetail(DetailView):
@@ -94,7 +90,7 @@ def export_users_xls(request):
     font_style = xlwt.XFStyle()
     font_style.num_format_str = 'D-MMM-YY'
 
-    rows = User.objects.filter(is_superuser=False).values_list('username', 'first_name', 'last_name', 'birth_date')
+    rows = User.objects.all().values_list('username', 'first_name', 'last_name', 'birth_date')
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
@@ -108,7 +104,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = User.objects.filter(is_superuser=False).order_by('-date_joined')
+    queryset = User.objects.all().order_by('-id')
     serializer_class = UserSerializer
 
 
@@ -118,27 +114,18 @@ class VotingList(ListView):
     model = User
 
 
-class ImageLike(VotingList):
+class LikeUserImage(View):
     """Like"""
-    def dispatch(self, request, *args, **kwargs):
-        user_image = User.objects.get(pk=self.kwargs['pk'])
-        self.like = LikeForm(request.POST)
-        try:
-            all_likes = Like.objects.filter(image=user_image)  # Выборка всех лайков к этому вопросу
-            own = False
-            if all_likes.filter(author=request.user).exists():  # Ищет пользователя в авторах лайков к этому вопросу
-                own = True
-            if self.like.is_valid() and not own and user_image.rating < 10:  # Если пользователь еще не ставил лайк
-                q_like = self.like.save(commit=False)
-                q_like.author = request.user
-                q_like.image = user_image
-                q_like.save()
-                user_image.rating = F('rating') + 1
-                user_image.save()
-                user_image.likes.add(q_like)
+
+    def get(self, request, pk):
+        with transaction.atomic():
+            qs = User.objects.select_for_update().filter(pk=self.kwargs['pk'])
+            user_image = get_object_or_404(qs, pk=self.kwargs['pk'])
+            try:
+                if user_image.rating < 10:
+                    user_image.rating = F('rating') + 1
+                    user_image.save()
+                    return redirect('voting')
+            except:
                 return redirect('voting')
-            elif self.like.is_valid() and own:  # Если пользователь уже ставил лайк
-                return redirect('voting')
-        except:
             return redirect('voting')
-        return super(VotingList, self).dispatch(request, *args, **kwargs)

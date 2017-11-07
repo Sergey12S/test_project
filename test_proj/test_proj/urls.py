@@ -15,27 +15,21 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.contrib.auth.views import login, logout
-from django.contrib.auth.decorators import user_passes_test
 from test_app.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
-from django.contrib.auth.decorators import login_required
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$|index/$', Index.as_view()),
-    url(r'^users_list/$', user_passes_test(lambda u: u.is_superuser)(UsersList.as_view())),
-    url(r'^user_detail/(?P<pk>\d+)/$', user_passes_test(lambda u: u.is_superuser)(UserDetail.as_view()), name='user_detail'),
-    url(r'^user_detail/(?P<pk>\d+)/delete/$', user_passes_test(lambda u: u.is_superuser)(UserDelete.as_view()), name='user_delete'),
-    url(r'^sign_in/$', login, {'template_name': 'sign_in.html'}),
-    url(r'^logout/$', logout),
-    url(r'^sign_up/$', SignUp.as_view()),
+    url(r'^$|users_list/$', UsersList.as_view()),
+    url(r'^user_detail/(?P<pk>\d+)/$', UserDetail.as_view(), name='user_detail'),
+    url(r'^user_detail/(?P<pk>\d+)/delete/$', UserDelete.as_view(), name='user_delete'),
     url(r'^export/xls/$', export_users_xls, name='export_users_xls'),
     url(r'^voting/$', VotingList.as_view(), name='voting'),
-    url(r'^voting/(?P<pk>\d+)/like/$', login_required(ImageLike.as_view()), name='image_like'),
+    url(r'^sign_up/$', SignUp.as_view()),
+    url(r'^voting/(?P<pk>\d+)/like/$', LikeUserImage.as_view(), name='image_like'),
 ]
 
 

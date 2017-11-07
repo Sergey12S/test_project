@@ -1,17 +1,21 @@
 {% extends 'base.html' %}
 {% block title %}User delete{% endblock %}
 
+{% block caption %}User Delete:{% endblock %}
+
 {% block content %}
 
-    <h3>Are you sure you want to delete?</h3>
-        <p style="text-decoration: underline;">
-            {{object.username}}
-        </p>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_table }}
-            <button type="submit">Yes</button>&nbsp;
-            <a href="/users_list/">No</a>
-        </form><br/>
+   <h2>Are you sure you want to delete?</h2><br/>
+
+    <p style="text-decoration: underline;">
+        {{ object.username }}<br/>
+        <img src="/media/{{ object.avatar }}" width="100px" height="100px">
+    </p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <button type="submit" class="btn btn-primary">Yes</button>&nbsp;
+        <a href="/users_list/" class="btn btn-primary">No</a>
+    </form><br/>
 
 {% endblock %}

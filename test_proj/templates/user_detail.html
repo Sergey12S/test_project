@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}User detail{% endblock %}
 
+{% block caption %}User Detail:{% endblock %}
+
 {% block content %}
 
-
-    <a href="/users_list/">back to list</a><br/><br/>
-
+    avatar: <img src="/media/{{ object.avatar }}" width="100px" height="100px"><br/><br/>
     username: {{ object.username }}<br/><br/>
     first_name: {{ object.first_name }}<br/><br/>
     last_name: {{ object.last_name }}<br/><br/>
     birth_date: {{ object.birth_date }}<br/><br/>
     age: {{ age }}<br/><br/>
-    avatar: <img src="/media/{{ object.avatar }}" width="100px" height="100px"><br/><br/>
     rating: {{ object.rating }}
 
 {% endblock %}
