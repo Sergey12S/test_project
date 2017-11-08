@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}Users list{% endblock %}
+{% block title %}List clients{% endblock %}
 
-{% block caption %}Users list:{% endblock %}
+{% block caption %}List clients:{% endblock %}
 
 {% block content %}
 
     <form action="" class="form-inline my-2 my-lg-0">
-        <input type="text" name="search" id="id_search" class="form-control mr-sm-2" placeholder="Search first_name" />&nbsp;
-        <input type="text" name="search2" id="id_search2" class="form-control mr-sm-2" placeholder="Search last_name" />
+        <input type="text" name="search_first_name" id="id_search_first_name" class="form-control mr-sm-2" placeholder="Search first_name" />&nbsp;
+        <input type="text" name="search_last_name" id="id_search_last_name" class="form-control mr-sm-2" placeholder="Search last_name" />
         <select name="sort_field" id="id_sort_field" class="custom-select">
             <option value="username">username</option>
             <option value="first_name">first_name</option>
@@ -27,8 +27,8 @@
             <span class="card-text">first_name: {{ user.first_name }}</span>&nbsp;&nbsp;&nbsp;
             <span class="card-text">last_name: {{ user.last_name }}</span>&nbsp;&nbsp;&nbsp;
             <span class="card-text">birth_date: {{ user.birth_date }}</span>
-            <a href="{% url 'user_detail' pk=user.id %}" class="btn btn-primary" style="float:right;margin-bottom:-20px;">Detail</a>
-            <a href="{% url 'user_delete' pk=user.id %}" class="btn btn-danger" style="float:right;margin-bottom:-20px;">Delete</a>
+            <a href="{% url 'detail_client' pk=user.id %}" class="btn btn-primary" style="float:right;margin-bottom:-20px;">Detail</a>
+            <a href="{% url 'delete_client' pk=user.id %}" class="btn btn-danger" style="float:right;margin-bottom:-20px;">Delete</a>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% block title %}User delete{% endblock %}
+{% block title %}Delete client{% endblock %}
 
-{% block caption %}User Delete:{% endblock %}
+{% block caption %}Delete client:{% endblock %}
 
 {% block content %}
 
@@ -15,7 +15,7 @@
         {% csrf_token %}
         {{ form.as_table }}
         <button type="submit" class="btn btn-primary">Yes</button>&nbsp;
-        <a href="/users_list/" class="btn btn-primary">No</a>
+        <a href="/list_clients/" class="btn btn-primary">No</a>
     </form><br/>
 
 {% endblock %}

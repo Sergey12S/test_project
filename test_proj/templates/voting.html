@@ -14,7 +14,7 @@
                 <img src="/media/{{ user.avatar }}" width="100px" height="100px"><br/>
                 rating: {{ user.rating }}<br/>
                 {% if user.rating < 10 %}
-                    <form action="{% url 'image_like' pk=user.id %}" method="get" style="display:inline;">
+                    <form action="{% url 'like' pk=user.id %}" method="get" style="display:inline;">
                         <button type="submit" class="btn btn-primary btn-sm">+1</button>
                     </form>
                 {% endif %}

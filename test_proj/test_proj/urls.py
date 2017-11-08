@@ -15,35 +15,40 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from test_app.views import *
 from django.conf import settings
 from django.conf.urls.static import static
+from test_app.views import *
 from rest_framework import routers
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$|users_list/$', UsersList.as_view()),
-    url(r'^user_detail/(?P<pk>\d+)/$', UserDetail.as_view(), name='user_detail'),
-    url(r'^user_detail/(?P<pk>\d+)/delete/$', UserDelete.as_view(), name='user_delete'),
+    url(r'^$|list_clients/$', ListClientsView.as_view()),
+    url(r'^list_clients/(?P<pk>\d+)/$', DetailClientView.as_view(),
+        name='detail_client'),
+    url(r'^list_clients/(?P<pk>\d+)/delete/$', DeleteClientView.as_view(),
+        name='delete_client'),
     url(r'^export/xls/$', export_users_xls, name='export_users_xls'),
-    url(r'^voting/$', VotingList.as_view(), name='voting'),
-    url(r'^sign_up/$', SignUp.as_view()),
-    url(r'^voting/(?P<pk>\d+)/like/$', LikeUserImage.as_view(), name='image_like'),
+    url(r'^voting/$', VotingListView.as_view(), name='voting'),
+    url(r'^add_client/$', AddClientView.as_view()),
+    url(r'^voting/(?P<pk>\d+)/like/$', LikeUserView.as_view(),
+        name='like'),
 ]
 
 
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
 
 
 router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+router.register(r'clients', ClientViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns += [
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls',
+                               namespace='rest_framework'))
 ]
