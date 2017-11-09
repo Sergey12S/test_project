@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from test_app.views import *
+from test_app.api import ClientViewSet, LikeAjaxAPIView
 from rest_framework import routers
 
 
@@ -50,5 +51,7 @@ router.register(r'clients', ClientViewSet)
 urlpatterns += [
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls',
-                               namespace='rest_framework'))
+                               namespace='rest_framework')),
+    url(r'^clients/(?P<pk>\d+)/like/$', LikeAjaxAPIView.as_view(),
+        name='like_ajax'),
 ]

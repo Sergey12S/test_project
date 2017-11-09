@@ -12,11 +12,12 @@
                 </div>
                 <div class="card-body text-primary">
                 <img src="/media/{{ user.avatar }}" width="100px" height="100px"><br/>
-                rating: {{ user.rating }}<br/>
+                rating: <b class="like_count">{{ user.rating }}</b><br/>
                 {% if user.rating < 10 %}
                     <form action="{% url 'like' pk=user.id %}" method="get" style="display:inline;">
                         <button type="submit" class="btn btn-primary btn-sm">+1</button>
                     </form>
+                    <button type="submit" datasrc="{% url 'like_ajax' pk=user.id %}" class="btn btn-primary btn-sm likes">like_ajax</button>
                 {% endif %}
                 </div>
             </div>

@@ -7,11 +7,9 @@ from django.shortcuts import redirect
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from datetime import date
-from rest_framework import viewsets
 from dateutil.relativedelta import relativedelta
 from .models import Client
 from .forms import ListClientsForm, AddClientForm
-from .serializers import ClientSerializer
 
 
 class AddClientView(CreateView):
@@ -100,14 +98,6 @@ def export_users_xls(request):
 
     wb.save(response)
     return response
-
-
-class ClientViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Client.objects.all().order_by("-id")
-    serializer_class = ClientSerializer
 
 
 class VotingListView(ListView):
