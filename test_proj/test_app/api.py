@@ -1,10 +1,11 @@
-from django.db.models import F
+from django.db import transaction
+from django.utils.decorators import method_decorator
 from rest_framework import viewsets
-from rest_framework.views import APIView
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
-from rest_framework import status
 from .serializers import ClientSerializer
 from .models import Client
+from .views import LikeMixin
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -15,10 +16,11 @@ class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerializer
 
 
-class LikeAjaxAPIView(APIView):
+@method_decorator(transaction.atomic, name="get")
+class LikeAjaxAPIView(LikeMixin, RetrieveAPIView):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
 
     def get(self, request, *args, **kwargs):
-        Client.objects.select_for_update().\
-            filter(rating__lt=10, pk=self.kwargs["pk"]).\
-            update(rating=F("rating") + 1)
-        return Response(status=status.HTTP_200_OK)
+        super(LikeAjaxAPIView, self).get(self, request, *args, **kwargs)
+        return Response(self.get_object().rating)

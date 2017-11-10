@@ -106,12 +106,18 @@ class VotingListView(ListView):
     model = Client
 
 
-@method_decorator(transaction.atomic, name="get")
-class LikeUserView(View):
-    """Like"""
-
+class LikeMixin:
+    """Common class for likes and AJAX"""
     def get(self, request, *args, **kwargs):
         Client.objects.select_for_update().\
             filter(rating__lt=10, pk=self.kwargs["pk"]).\
             update(rating=F("rating") + 1)
+
+
+@method_decorator(transaction.atomic, name="get")
+class LikeUserView(LikeMixin, View):
+    """Like"""
+
+    def get(self, request, *args, **kwargs):
+        super(LikeUserView, self).get(self, request, *args, **kwargs)
         return redirect("voting")
