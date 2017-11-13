@@ -17,7 +17,7 @@ class AddClientView(CreateView):
     model = Client
     template_name = "add_client.html"
     form_class = AddClientForm
-    success_url = "/list_clients/"
+    success_url = "/clients/"
 
 
 class ListClientsView(ListView):
@@ -63,7 +63,7 @@ class DeleteClientView(DeleteView):
     """Delete client page"""
     model = Client
     template_name = "delete_client.html"
-    success_url = "/list_clients/"
+    success_url = "/clients/"
 
 
 def export_users_xls(request):
@@ -108,8 +108,8 @@ class VotingListView(ListView):
 
 class LikeMixin:
     """Common class for likes and AJAX"""
-    def get(self, request, *args, **kwargs):
-        Client.objects.select_for_update().\
+    def like(self):
+        self.queryset.select_for_update().\
             filter(rating__lt=10, pk=self.kwargs["pk"]).\
             update(rating=F("rating") + 1)
 
@@ -117,7 +117,8 @@ class LikeMixin:
 @method_decorator(transaction.atomic, name="get")
 class LikeUserView(LikeMixin, View):
     """Like"""
+    queryset = Client.objects.all()
 
     def get(self, request, *args, **kwargs):
-        super(LikeUserView, self).get(self, request, *args, **kwargs)
-        return redirect("voting")
+        self.like()
+        return redirect("/clients/voting/")

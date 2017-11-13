@@ -24,15 +24,15 @@ from rest_framework import routers
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$|list_clients/$', ListClientsView.as_view()),
-    url(r'^list_clients/(?P<pk>\d+)/$', DetailClientView.as_view(),
+    url(r'^$|^clients/$', ListClientsView.as_view()),
+    url(r'^clients/add/$', AddClientView.as_view()),
+    url(r'^clients/voting/$', VotingListView.as_view()),
+    url(r'^clients/export/xls/$', export_users_xls),
+    url(r'^clients/(?P<pk>\d+)/$', DetailClientView.as_view(),
         name='detail_client'),
-    url(r'^list_clients/(?P<pk>\d+)/delete/$', DeleteClientView.as_view(),
+    url(r'^clients/(?P<pk>\d+)/delete/$', DeleteClientView.as_view(),
         name='delete_client'),
-    url(r'^export/xls/$', export_users_xls, name='export_users_xls'),
-    url(r'^voting/$', VotingListView.as_view(), name='voting'),
-    url(r'^add_client/$', AddClientView.as_view()),
-    url(r'^voting/(?P<pk>\d+)/like/$', LikeUserView.as_view(),
+    url(r'^clients/(?P<pk>\d+)/like/$', LikeUserView.as_view(),
         name='like'),
 ]
 
@@ -44,14 +44,12 @@ if settings.DEBUG:
 
 
 router = routers.DefaultRouter()
-router.register(r'clients', ClientViewSet)
+router.register(r'api/clients', ClientViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns += [
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls',
-                               namespace='rest_framework')),
-    url(r'^clients/(?P<pk>\d+)/like/$', LikeAjaxAPIView.as_view(),
+    url(r'^api/clients/(?P<pk>\d+)/like/$', LikeAjaxAPIView.as_view(),
         name='like_ajax'),
 ]

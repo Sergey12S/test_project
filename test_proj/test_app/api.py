@@ -19,8 +19,7 @@ class ClientViewSet(viewsets.ModelViewSet):
 @method_decorator(transaction.atomic, name="get")
 class LikeAjaxAPIView(LikeMixin, RetrieveAPIView):
     queryset = Client.objects.all()
-    serializer_class = ClientSerializer
 
     def get(self, request, *args, **kwargs):
-        super(LikeAjaxAPIView, self).get(self, request, *args, **kwargs)
+        self.like()
         return Response(self.get_object().rating)
