@@ -17,23 +17,24 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from test_app.views import *
-from test_app.api import ClientViewSet, LikeAjaxAPIView
+from test_app.api import ClientViewSet
 from rest_framework import routers
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$|^clients/$', ListClientsView.as_view()),
-    url(r'^clients/add/$', AddClientView.as_view()),
-    url(r'^clients/voting/$', VotingListView.as_view()),
-    url(r'^clients/export/xls/$', export_users_xls),
-    url(r'^clients/(?P<pk>\d+)/$', DetailClientView.as_view(),
-        name='detail_client'),
-    url(r'^clients/(?P<pk>\d+)/delete/$', DeleteClientView.as_view(),
-        name='delete_client'),
-    url(r'^clients/(?P<pk>\d+)/like/$', LikeUserView.as_view(),
-        name='like'),
+    url(r'^clients/', include('test_app.urls'))
+]
+
+
+router = routers.DefaultRouter()
+router.register(r'clients', ClientViewSet)
+
+# Wire up our API using automatic URL routing.
+# Additionally, we include login URLs for the browsable API.
+urlpatterns += [
+    url(r'^api/', include(router.urls)),
+    url(r'^api/', include('test_app.urls'))
 ]
 
 
@@ -41,15 +42,3 @@ if settings.DEBUG:
     # static files (images, css, javascript, etc.)
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
-
-
-router = routers.DefaultRouter()
-router.register(r'api/clients', ClientViewSet)
-
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
-urlpatterns += [
-    url(r'^', include(router.urls)),
-    url(r'^api/clients/(?P<pk>\d+)/like/$', LikeAjaxAPIView.as_view(),
-        name='like_ajax'),
-]
