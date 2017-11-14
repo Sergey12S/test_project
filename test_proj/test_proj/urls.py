@@ -34,7 +34,7 @@ router.register(r'clients', ClientViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns += [
     url(r'^api/', include(router.urls)),
-    url(r'^api/', include('test_app.api_urls'))
+    url(r'^api/clients/', include('test_app.api_urls'))
 ]
 
 
